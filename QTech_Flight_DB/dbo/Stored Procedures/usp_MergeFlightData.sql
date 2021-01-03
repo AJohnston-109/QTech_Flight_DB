@@ -1,7 +1,7 @@
 ﻿/*
     -- Author:      Anthony Johnston
     -- Create date: 31/12/2020
-    -- Description: stored procedure to INSERT / UPDATE Flight Data into base table
+    -- Description: stored procedure to INSERT / UPDATE Flight Data into PARENT base table
     ***************************       CHANGE HISTORY (Reverse Chronological)      ***************************
     *
 	*	
@@ -46,69 +46,106 @@ BEGIN TRY
 		SELECT @return AS ReturnCode, @err_message AS errMessage;
 		RETURN;		
 	END;
-
-	IF (@ScenarioId = 1)
+	
+	IF @FlightDataId IS NOT NULL --This is an UPDATE -- TODO - should the INSERT / UPDATE parameter be The Primary Key FlightDataId or UserIdentifier??
 	BEGIN
-		IF @FlightDataId IS NOT NULL --This is an UPDATE -- TODO - should the INSERT / UPDATE parameter be The Primary Key FlightDataId or UserIdentifier??
+		IF EXISTS (SELECT 1 
+					FROM dbo.FlightData 
+					WHERE FlightDataId = @FlightDataId)
 		BEGIN
-			IF EXISTS (SELECT 1 
-						FROM dbo.FlightData 
-						WHERE FlightDataId = @FlightDataId)
-			BEGIN
-				SET			@return = @FlightDataId
-				UPDATE F
-				SET		UserIdentifier = @UserIdentifier
-						, Start_Timestamp = @Start_Timestamp
-						, Duration = @Duration
-						, Start_Frame_Index = @Start_Frame_Index
-						, End_Frame_Index = @End_Frame_Index
-						, Norm_Pos_X = @Norm_Pos_X
-						, Norm_Pos_Y = @Norm_Pos_Y
-						, Dispersion = @Dispersion
-						, Confidence = @Confidence					
-						, Gaze_Point_3d_X = @Gaze_Point_3d_X
-						, Gaze_Point_3d_Y = @Gaze_Point_3d_Y
-						, Gaze_Point_3d_Z = @Gaze_Point_3d_Z
-				FROM dbo.FlightData F
-				WHERE FlightDataId = @FlightDataId
-			END
+			SET			@return = @FlightDataId
+			UPDATE F
+			SET		UserIdentifier = @UserIdentifier
+					, Start_Timestamp = @Start_Timestamp
+					, Duration = @Duration
+					, Start_Frame_Index = @Start_Frame_Index
+					, End_Frame_Index = @End_Frame_Index
+					, Norm_Pos_X = @Norm_Pos_X
+					, Norm_Pos_Y = @Norm_Pos_Y
+					, Dispersion = @Dispersion
+					, Confidence = @Confidence					
+					, Gaze_Point_3d_X = @Gaze_Point_3d_X
+					, Gaze_Point_3d_Y = @Gaze_Point_3d_Y
+					, Gaze_Point_3d_Z = @Gaze_Point_3d_Z
+			FROM dbo.FlightData F
+			WHERE FlightDataId = @FlightDataId
 		END
-		ELSE --This is a new row
+	END
+	ELSE --This is a new row
+	BEGIN
+	IF NOT EXISTS (SELECT 1 
+					FROM dbo.FlightData 
+					WHERE FlightDataId = @FlightDataId)
 		BEGIN
-		IF NOT EXISTS (SELECT 1 
-						FROM dbo.FlightData 
-						WHERE FlightDataId = @FlightDataId)
-			BEGIN
-				INSERT INTO dbo.TakeOff (Start_timestamp
-											, Duration
-											, Start_Frame_Index
-											, End_Frame_Index
-											, Norm_Pos_X
-											, Norm_Pos_Y
-											, Dispersion
-											, Confidence										
-											, Gaze_Point_3d_X
-											, Gaze_Point_3d_Y
-											, Gaze_Point_3d_Z)
-				SELECT						@Start_timestamp
-											, @Duration
-											, @Start_Frame_Index
-											, @End_Frame_Index
-											, @Norm_Pos_X
-											, @Norm_Pos_Y
-											, @Dispersion
-											, @Confidence										
-											, @Gaze_Point_3d_X
-											, @Gaze_Point_3d_Y
-											, @Gaze_Point_3d_Z
+			INSERT INTO dbo.FlightData (ScenarioId
+										, UserIdentifier
+										, Start_timestamp
+										, Duration
+										, Start_Frame_Index
+										, End_Frame_Index
+										, Norm_Pos_X
+										, Norm_Pos_Y
+										, Dispersion
+										, Confidence										
+										, Gaze_Point_3d_X
+										, Gaze_Point_3d_Y
+										, Gaze_Point_3d_Z)
+			SELECT						@ScenarioId
+										, @UserIdentifier
+										, @Start_timestamp
+										, @Duration
+										, @Start_Frame_Index
+										, @End_Frame_Index
+										, @Norm_Pos_X
+										, @Norm_Pos_Y
+										, @Dispersion
+										, @Confidence										
+										, @Gaze_Point_3d_X
+										, @Gaze_Point_3d_Y
+										, @Gaze_Point_3d_Z
 
-				SET @return = SCOPE_IDENTITY()	
-				SET @FlightDataId = @return
-			END;
+			SET @return = SCOPE_IDENTITY()	
+			SET @FlightDataId = @return
 		END;
 	END;
 	-- For front end use
 	SELECT @return AS ReturnCode, @err_message AS errMessage
+
+	IF @ScenarioId = 1
+	BEGIN
+		EXEC usp_MergeTakeOffData  @FlightDataId = @FlightDataId, @ScenarioId = @ScenarioId, @UserIdentifier = @UserIdentifier
+	, @Start_Timestamp = @Start_Timestamp, @Duration = @Duration, @Start_Frame_Index = @Start_Frame_Index
+	, @End_Frame_Index	= @End_Frame_Index, @Norm_Pos_X = @Norm_Pos_X, @Norm_Pos_Y = @Norm_Pos_Y, @Dispersion = @Dispersion, 
+	@Confidence = @Confidence, @Gaze_Point_3d_X = @Gaze_Point_3d_X, @Gaze_Point_3d_Y = @Gaze_Point_3d_Y, @Gaze_Point_3d_Z = @Gaze_Point_3d_Z
+	END
+	ELSE IF  @ScenarioId = 2
+	BEGIN
+		EXEC usp_MergeLandingData  @FlightDataId = @FlightDataId, @ScenarioId = @ScenarioId, @UserIdentifier = @UserIdentifier
+	, @Start_Timestamp = @Start_Timestamp, @Duration = @Duration, @Start_Frame_Index = @Start_Frame_Index
+	, @End_Frame_Index	= @End_Frame_Index, @Norm_Pos_X = @Norm_Pos_X, @Norm_Pos_Y = @Norm_Pos_Y, @Dispersion = @Dispersion, 
+	@Confidence = @Confidence, @Gaze_Point_3d_X = @Gaze_Point_3d_X, @Gaze_Point_3d_Y = @Gaze_Point_3d_Y, @Gaze_Point_3d_Z = @Gaze_Point_3d_Z
+	END
+	ELSE IF  @ScenarioId = 3
+	BEGIN
+		EXEC usp_MergeTurbulenceData  @FlightDataId = @FlightDataId, @ScenarioId = @ScenarioId, @UserIdentifier = @UserIdentifier
+	, @Start_Timestamp = @Start_Timestamp, @Duration = @Duration, @Start_Frame_Index = @Start_Frame_Index
+	, @End_Frame_Index	= @End_Frame_Index, @Norm_Pos_X = @Norm_Pos_X, @Norm_Pos_Y = @Norm_Pos_Y, @Dispersion = @Dispersion, 
+	@Confidence = @Confidence, @Gaze_Point_3d_X = @Gaze_Point_3d_X, @Gaze_Point_3d_Y = @Gaze_Point_3d_Y, @Gaze_Point_3d_Z = @Gaze_Point_3d_Z
+	END
+	ELSE IF  @ScenarioId = 4
+	BEGIN
+		EXEC usp_MergeBirdStrikeData  @FlightDataId = @FlightDataId, @ScenarioId = @ScenarioId, @UserIdentifier = @UserIdentifier
+	, @Start_Timestamp = @Start_Timestamp, @Duration = @Duration, @Start_Frame_Index = @Start_Frame_Index
+	, @End_Frame_Index	= @End_Frame_Index, @Norm_Pos_X = @Norm_Pos_X, @Norm_Pos_Y = @Norm_Pos_Y, @Dispersion = @Dispersion, 
+	@Confidence = @Confidence, @Gaze_Point_3d_X = @Gaze_Point_3d_X, @Gaze_Point_3d_Y = @Gaze_Point_3d_Y, @Gaze_Point_3d_Z = @Gaze_Point_3d_Z
+	END
+	ELSE 
+	BEGIN
+		EXEC usp_MergeEngineFailureData  @FlightDataId = @FlightDataId, @ScenarioId = @ScenarioId, @UserIdentifier = @UserIdentifier
+	, @Start_Timestamp = @Start_Timestamp, @Duration = @Duration, @Start_Frame_Index = @Start_Frame_Index
+	, @End_Frame_Index	= @End_Frame_Index, @Norm_Pos_X = @Norm_Pos_X, @Norm_Pos_Y = @Norm_Pos_Y, @Dispersion = @Dispersion, 
+	@Confidence = @Confidence, @Gaze_Point_3d_X = @Gaze_Point_3d_X, @Gaze_Point_3d_Y = @Gaze_Point_3d_Y, @Gaze_Point_3d_Z = @Gaze_Point_3d_Z
+	END
 		
 END TRY	
 

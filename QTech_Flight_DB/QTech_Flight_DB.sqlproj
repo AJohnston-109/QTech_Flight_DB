@@ -70,10 +70,23 @@
     <Build Include="dbo\Stored Procedures\usp_SelectFlightData.sql" />
     <Build Include="dbo\Stored Procedures\usp_MergeFlightData.sql" />
     <Build Include="dbo\Stored Procedures\usp_DeleteFlightData.sql" />
-    <Build Include="dbo\Tables\TakeOff.sql" />
-    <Build Include="dbo\Tables\Scenarios.sql" />
+    <Build Include="dbo\Tables\TakeOffData.sql" />
+    <Build Include="dbo\Tables\Scenario.sql" />
+    <Build Include="dbo\Tables\LandingData.sql" />
+    <Build Include="dbo\Tables\TurbulenceData.sql" />
+    <Build Include="dbo\Tables\BirdStrikeData.sql" />
+    <Build Include="dbo\Tables\EngineFailureData.sql" />
+    <Build Include="dbo\Stored Procedures\usp_MergeTakeOffData.sql" />
+    <Build Include="dbo\Stored Procedures\usp_MergeLandingData.sql" />
+    <Build Include="dbo\Stored Procedures\usp_MergeTurbulenceData.sql" />
+    <Build Include="dbo\Stored Procedures\usp_MergeBirdStrikeData.sql" />
+    <Build Include="dbo\Stored Procedures\usp_MergeEngineFailureData.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="QTech_Flight_DB.publish.xml" />
+    <None Include="dbo\Static_Data\StaticScenarioData.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment.sql" />
   </ItemGroup>
 </Project>
