@@ -146,6 +146,8 @@ BEGIN TRY
 	, @End_Frame_Index	= @End_Frame_Index, @Norm_Pos_X = @Norm_Pos_X, @Norm_Pos_Y = @Norm_Pos_Y, @Dispersion = @Dispersion, 
 	@Confidence = @Confidence, @Gaze_Point_3d_X = @Gaze_Point_3d_X, @Gaze_Point_3d_Y = @Gaze_Point_3d_Y, @Gaze_Point_3d_Z = @Gaze_Point_3d_Z
 	END
+
+	--Tacview
 		
 END TRY	
 

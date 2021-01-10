@@ -81,6 +81,12 @@
     <Build Include="dbo\Stored Procedures\usp_MergeTurbulenceData.sql" />
     <Build Include="dbo\Stored Procedures\usp_MergeBirdStrikeData.sql" />
     <Build Include="dbo\Stored Procedures\usp_MergeEngineFailureData.sql" />
+    <Build Include="dbo\Tables\TacviewData.sql" />
+    <Build Include="dbo\Tables\XmlData.sql" />
+    <Build Include="dbo\Tables\TacFlightRecording.sql" />
+    <Build Include="dbo\Tables\TacMission.sql" />
+    <Build Include="dbo\Tables\TacEvents.sql" />
+    <Build Include="dbo\Stored Procedures\usp_XmlShred.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="QTech_Flight_DB.publish.xml" />
