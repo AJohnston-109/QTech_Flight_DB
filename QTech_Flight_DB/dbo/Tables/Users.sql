@@ -5,5 +5,6 @@
 	, UserName			NVARCHAR(100)				NOT NULL
 	, [Password]		NVARCHAR(100)				NOT NULL
 	, Email				NVARCHAR(100)				NOT NULL
+	, DateInserted		DATETIME					NULL CONSTRAINT DF_Users_DateInserted DEFAULT GETDATE()
 	, CONSTRAINT PK_Users_UserId PRIMARY KEY (UserId) 
 )

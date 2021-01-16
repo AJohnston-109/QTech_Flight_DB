@@ -5,7 +5,7 @@
     -- Description: stored procedure to INSERT / UPDATE Flight Data into child table
     ***************************       CHANGE HISTORY (Reverse Chronological)      ***************************
     *
-	*	
+	*	[AJ] 16/01/2021 -	Added TRANSACTIONS / TRANSACTION save points, checking for external TRANSACTIONS 
     *********************************************************************************************************/
 CREATE PROCEDURE dbo.usp_MergeEngineFailureData
 (
@@ -34,9 +34,16 @@ SET NOCOUNT ON
 	DECLARE @error INTEGER
 	DECLARE @return INTEGER
 	DECLARE @UserName	NVARCHAR(100)
+	DECLARE @TranCount	BIT = 0
 
 BEGIN TRY
-	
+IF @@TRANCOUNT = 0
+BEGIN
+	BEGIN TRANSACTION
+	SET @TranCount = 1
+END
+ELSE SAVE TRANSACTION usp_MergeEngineFailureDataTran
+
 	IF @EngineFailureDataId IS NULL 
 	BEGIN
 		INSERT INTO dbo.BirdStrikeData (FlightDataId
@@ -75,11 +82,18 @@ BEGIN TRY
 	-- For front end use
 	--SELECT @return AS ReturnCode, @err_message AS errMessage
 		
+	IF @TranCount=1
+	COMMIT TRANSACTION
+
 END TRY	
 
 BEGIN CATCH
-
+	
 	EXEC usp_GetErrorInfo @error = @error, @err_message = @err_message;
+	IF @TranCount=1
+		ROLLBACK
+	ELSE
+	ROLLBACK TRANSACTION usp_MergeEngineFailureDataTran
 
 END CATCH
 END

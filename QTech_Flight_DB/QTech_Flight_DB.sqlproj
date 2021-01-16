@@ -87,6 +87,8 @@
     <Build Include="dbo\Tables\TacMission.sql" />
     <Build Include="dbo\Tables\TacEvents.sql" />
     <Build Include="dbo\Stored Procedures\usp_XmlShred.sql" />
+    <Build Include="dbo\Tables\Pilots.sql" />
+    <Build Include="dbo\Stored Procedures\usp_MergeTacviewData.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="QTech_Flight_DB.publish.xml" />

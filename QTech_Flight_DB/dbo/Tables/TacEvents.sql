@@ -14,5 +14,6 @@ CREATE TABLE dbo.TacEvents
 	, [Name]					NVARCHAR(30)			NULL
 	, Pilot						NVARCHAR(30)			NULL
 	, [Action]					NVARCHAR(30)			NULL
+	, DateInserted				DATETIME				NULL CONSTRAINT DF_TacEvents_DateInserted DEFAULT GETDATE()
 	, CONSTRAINT PK_TacEvents_TacEventsId PRIMARY KEY (TacEventsId)
 )

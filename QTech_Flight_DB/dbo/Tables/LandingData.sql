@@ -16,5 +16,6 @@
 	, Gaze_Point_3d_X		DECIMAl(15,12)				NULL
 	, Gaze_Point_3d_Y		DECIMAL(15,12)				NULL
 	, Gaze_Point_3d_Z		DECIMAL(15,12)				NULL
+	, DateInserted			DATETIME					NULL CONSTRAINT DF_LandingData_DateInserted DEFAULT GETDATE()
 	, CONSTRAINT PK_LandingData_TakeOffId PRIMARY KEY (LandingDataId)
 )

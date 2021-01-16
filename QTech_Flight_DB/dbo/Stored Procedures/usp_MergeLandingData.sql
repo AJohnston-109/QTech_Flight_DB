@@ -33,9 +33,12 @@ SET NOCOUNT ON
 	DECLARE @error INTEGER
 	DECLARE @return INTEGER
 	DECLARE @UserName	NVARCHAR(100)
+	DECLARE @TranCount	BIT = 0
 
 BEGIN TRY
-	
+BEGIN TRANSACTION
+	SET @TranCount = 1
+
 	IF @LandingDataId IS NULL 
 	BEGIN
 		INSERT INTO dbo.LandingData (FlightDataId
@@ -55,7 +58,7 @@ BEGIN TRY
 		SELECT						@FlightDataId
 									, @ScenarioId
 									, @UserIdentifier
-									, @Start_timestamp
+									, @Start_Timestamp
 									, @Duration
 									, @Start_Frame_Index
 									, @End_Frame_Index
@@ -74,12 +77,20 @@ BEGIN TRY
 	-- For front end use
 	--SELECT @return AS ReturnCode, @err_message AS errMessage
 		
+	IF @TranCount=1
+	COMMIT TRANSACTION
+
 END TRY	
 
 BEGIN CATCH
-
+	
 	EXEC usp_GetErrorInfo @error = @error, @err_message = @err_message;
+	IF @TranCount=1
+		ROLLBACK
+	ELSE
+	ROLLBACK TRANSACTION usp_MergeLandingDataTran
 
 END CATCH
+
 END
 GO
