@@ -4,6 +4,7 @@
 	, FlightDataId			INTEGER						NOT NULL --FK from Parent Table's PK FlightData
 	, ScenarioId			INTEGER						NULL
 	, UserIdentifier		UNIQUEIDENTIFIER			NULL
+	, PilotIdentifier			UNIQUEIDENTIFIER			NULL
 	, Start_Timestamp		DECIMAL(8,4)				NULL 
 	, Duration				DECIMAL(5,1)				NULL
 	, Start_Frame_Index		INTEGER						NULL

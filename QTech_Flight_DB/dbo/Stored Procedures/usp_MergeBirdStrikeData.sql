@@ -12,6 +12,7 @@ CREATE PROCEDURE dbo.usp_MergeBirdStrikeData
 	, @FlightDataId			INTEGER 
 	, @ScenarioId			INTEGER
 	, @UserIdentifier		UNIQUEIDENTIFIER
+	, @PilotIdentifier		UNIQUEIDENTIFIER	=	NULL
 	, @Start_Timestamp		DECIMAL(8,4)	=	NULL 
 	, @Duration				DECIMAL(5,1)	=	NULL 
 	, @Start_Frame_Index	INTEGER			=	NULL 
@@ -49,7 +50,7 @@ ELSE
 		INSERT INTO dbo.BirdStrikeData (FlightDataId
 									, ScenarioId
 									, UserIdentifier
-									, Start_timestamp
+									, Start_Timestamp
 									, Duration
 									, Start_Frame_Index
 									, End_Frame_Index
@@ -63,7 +64,7 @@ ELSE
 		SELECT						@FlightDataId
 									, @ScenarioId
 									, @UserIdentifier
-									, @Start_timestamp
+									, @Start_Timestamp
 									, @Duration
 									, @Start_Frame_Index
 									, @End_Frame_Index

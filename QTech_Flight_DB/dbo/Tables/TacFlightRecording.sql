@@ -1,6 +1,7 @@
 ﻿CREATE TABLE dbo.TacFlightRecording
 (
 	TacFlightRecordingId		INTEGER	 IDENTITY(1,1)	NOT NULL 
+	, PilotIdentifier			UNIQUEIDENTIFIER			NULL
 	, [Source]					NVARCHAR(50)				NULL
 	, Recorder					NVARCHAR(50)				NULL
 	, RecordingTime				NVARCHAR(50)				NULL --not datetime for now as is in a weird format that I will have to dataparse

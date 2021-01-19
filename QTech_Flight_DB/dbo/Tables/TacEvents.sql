@@ -3,6 +3,7 @@ CREATE TABLE dbo.TacEvents
 (
 	TacEventsId					INTEGER	 IDENTITY(1,1)	NOT NULL 
 	, TacFlightRecordingId		INTEGER					NOT NULL
+	, PilotIdentifier			UNIQUEIDENTIFIER			NULL
 	, [Time]					DECIMAL(6,2)			NULL
 	, Longtitude				DECIMAL(10,7)			NULL
 	, Latitude					DECIMAL(10,7)			NULL

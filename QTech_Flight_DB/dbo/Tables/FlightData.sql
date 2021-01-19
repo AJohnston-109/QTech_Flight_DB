@@ -3,6 +3,7 @@
 	FlightDataId			INTEGER		IDENTITY(1,1)	NOT NULL --PK -> FK in Child tables (LandingData, TakeoffData etc.)
 	, ScenarioId			INTEGER						NULL
 	, UserIdentifier		UNIQUEIDENTIFIER			NULL
+	, PilotIdentifier		UNIQUEIDENTIFIER			NULL
 	, Start_Timestamp		DECIMAL(8,4)				NULL /*(Precision -8 digits long, Scale - 4 numbers after decimal point*/
 	, Duration				DECIMAL(5,1)				NULL
 	, Start_Frame_Index		INTEGER						NULL

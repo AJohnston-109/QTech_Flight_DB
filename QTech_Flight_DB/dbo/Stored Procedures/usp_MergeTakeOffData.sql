@@ -12,6 +12,7 @@ CREATE PROCEDURE dbo.usp_MergeTakeOffData
 	, @FlightDataId			INTEGER 
 	, @ScenarioId			INTEGER
 	, @UserIdentifier		UNIQUEIDENTIFIER
+	, @PilotIdentifier		UNIQUEIDENTIFIER
 	, @Start_Timestamp		DECIMAL(8,4)	=	NULL 
 	, @Duration				DECIMAL(5,1)	=	NULL 
 	, @Start_Frame_Index	INTEGER			=	NULL 
@@ -48,7 +49,7 @@ ELSE SAVE TRANSACTION usp_MergeTakeOffDataTran
 		INSERT INTO dbo.TakeOffData (FlightDataId
 									, ScenarioId
 									, UserIdentifier
-									, Start_timestamp
+									, Start_Timestamp
 									, Duration
 									, Start_Frame_Index
 									, End_Frame_Index
@@ -62,7 +63,7 @@ ELSE SAVE TRANSACTION usp_MergeTakeOffDataTran
 		SELECT						@FlightDataId
 									, @ScenarioId
 									, @UserIdentifier
-									, @Start_timestamp
+									, @Start_Timestamp
 									, @Duration
 									, @Start_Frame_Index
 									, @End_Frame_Index

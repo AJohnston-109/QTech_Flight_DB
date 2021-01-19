@@ -68,7 +68,8 @@ BEGIN
 END
 ELSE SAVE TRANSACTION usp_MergeFlightDataTran
 
-	IF @PilotIdentifier IS NULL
+	IF NOT EXISTS (Select 1 FROM dbo.Pilots
+					WHERE Pilot = @Pilot)
 	BEGIN
 		SET @PilotIdentifier = (SELECT MAX(PilotIdentifier) 
 								FROM dbo.TacviewData
@@ -80,8 +81,12 @@ ELSE SAVE TRANSACTION usp_MergeFlightDataTran
 	BEGIN
 		INSERT INTO dbo.Pilots		(PilotIdentifier
 									, Pilot)
-		SELECT						@PilotIdentifier
+		SELECT						NEWID()
 									, @Pilot
+
+		SET @PilotIdentifier = (SELECT PilotIdentifier
+								FROM dbo.Pilots
+								WHERE Pilot = @Pilot)
 	END
 	SET @UserName = (SELECT MAX(UserName)
 					FROM dbo.Users 
@@ -104,6 +109,7 @@ ELSE SAVE TRANSACTION usp_MergeFlightDataTran
 			SET			@return = @FlightDataId
 			UPDATE F
 			SET		UserIdentifier = @UserIdentifier
+					, PilotIdentifier = @PilotIdentifier
 					, Start_Timestamp = @Start_Timestamp
 					, Duration = @Duration
 					, Start_Frame_Index = @Start_Frame_Index
@@ -127,6 +133,7 @@ ELSE SAVE TRANSACTION usp_MergeFlightDataTran
 		BEGIN
 			INSERT INTO dbo.FlightData (ScenarioId
 										, UserIdentifier
+										, PilotIdentifier 
 										, Start_timestamp
 										, Duration
 										, Start_Frame_Index
@@ -140,6 +147,7 @@ ELSE SAVE TRANSACTION usp_MergeFlightDataTran
 										, Gaze_Point_3d_Z)
 			SELECT						@ScenarioId
 										, @UserIdentifier
+										, @PilotIdentifier 
 										, @Start_timestamp
 										, @Duration
 										, @Start_Frame_Index
@@ -165,35 +173,35 @@ ELSE SAVE TRANSACTION usp_MergeFlightDataTran
 	--Nested SPs
 	IF @ScenarioId = 1
 	BEGIN
-		EXEC usp_MergeTakeOffData  @FlightDataId = @FlightDataId, @ScenarioId = @ScenarioId, @UserIdentifier = @UserIdentifier
+		EXEC usp_MergeTakeOffData  @FlightDataId = @FlightDataId, @ScenarioId = @ScenarioId, @UserIdentifier = @UserIdentifier, @PilotIdentifier = @PilotIdentifier
 	, @Start_Timestamp = @Start_Timestamp, @Duration = @Duration, @Start_Frame_Index = @Start_Frame_Index
 	, @End_Frame_Index	= @End_Frame_Index, @Norm_Pos_X = @Norm_Pos_X, @Norm_Pos_Y = @Norm_Pos_Y, @Dispersion = @Dispersion, 
 	@Confidence = @Confidence, @Gaze_Point_3d_X = @Gaze_Point_3d_X, @Gaze_Point_3d_Y = @Gaze_Point_3d_Y, @Gaze_Point_3d_Z = @Gaze_Point_3d_Z
 	END
 	ELSE IF  @ScenarioId = 2
 	BEGIN
-		EXEC usp_MergeLandingData  @FlightDataId = @FlightDataId, @ScenarioId = @ScenarioId, @UserIdentifier = @UserIdentifier
+		EXEC usp_MergeLandingData  @FlightDataId = @FlightDataId, @ScenarioId = @ScenarioId, @UserIdentifier = @UserIdentifier, @PilotIdentifier = @PilotIdentifier
 	, @Start_Timestamp = @Start_Timestamp, @Duration = @Duration, @Start_Frame_Index = @Start_Frame_Index
 	, @End_Frame_Index	= @End_Frame_Index, @Norm_Pos_X = @Norm_Pos_X, @Norm_Pos_Y = @Norm_Pos_Y, @Dispersion = @Dispersion, 
 	@Confidence = @Confidence, @Gaze_Point_3d_X = @Gaze_Point_3d_X, @Gaze_Point_3d_Y = @Gaze_Point_3d_Y, @Gaze_Point_3d_Z = @Gaze_Point_3d_Z
 	END
 	ELSE IF  @ScenarioId = 3
 	BEGIN
-		EXEC usp_MergeTurbulenceData  @FlightDataId = @FlightDataId, @ScenarioId = @ScenarioId, @UserIdentifier = @UserIdentifier
+		EXEC usp_MergeTurbulenceData  @FlightDataId = @FlightDataId, @ScenarioId = @ScenarioId, @UserIdentifier = @UserIdentifier, @PilotIdentifier = @PilotIdentifier
 	, @Start_Timestamp = @Start_Timestamp, @Duration = @Duration, @Start_Frame_Index = @Start_Frame_Index
 	, @End_Frame_Index	= @End_Frame_Index, @Norm_Pos_X = @Norm_Pos_X, @Norm_Pos_Y = @Norm_Pos_Y, @Dispersion = @Dispersion, 
 	@Confidence = @Confidence, @Gaze_Point_3d_X = @Gaze_Point_3d_X, @Gaze_Point_3d_Y = @Gaze_Point_3d_Y, @Gaze_Point_3d_Z = @Gaze_Point_3d_Z
 	END
 	ELSE IF  @ScenarioId = 4
 	BEGIN
-		EXEC usp_MergeBirdStrikeData  @FlightDataId = @FlightDataId, @ScenarioId = @ScenarioId, @UserIdentifier = @UserIdentifier
+		EXEC usp_MergeBirdStrikeData  @FlightDataId = @FlightDataId, @ScenarioId = @ScenarioId, @UserIdentifier = @UserIdentifier, @PilotIdentifier = @PilotIdentifier
 	, @Start_Timestamp = @Start_Timestamp, @Duration = @Duration, @Start_Frame_Index = @Start_Frame_Index
 	, @End_Frame_Index	= @End_Frame_Index, @Norm_Pos_X = @Norm_Pos_X, @Norm_Pos_Y = @Norm_Pos_Y, @Dispersion = @Dispersion, 
 	@Confidence = @Confidence, @Gaze_Point_3d_X = @Gaze_Point_3d_X, @Gaze_Point_3d_Y = @Gaze_Point_3d_Y, @Gaze_Point_3d_Z = @Gaze_Point_3d_Z
 	END
 	ELSE 
 	BEGIN
-		EXEC usp_MergeEngineFailureData  @FlightDataId = @FlightDataId, @ScenarioId = @ScenarioId, @UserIdentifier = @UserIdentifier
+		EXEC usp_MergeEngineFailureData  @FlightDataId = @FlightDataId, @ScenarioId = @ScenarioId, @UserIdentifier = @UserIdentifier, @PilotIdentifier = @PilotIdentifier
 	, @Start_Timestamp = @Start_Timestamp, @Duration = @Duration, @Start_Frame_Index = @Start_Frame_Index
 	, @End_Frame_Index	= @End_Frame_Index, @Norm_Pos_X = @Norm_Pos_X, @Norm_Pos_Y = @Norm_Pos_Y, @Dispersion = @Dispersion, 
 	@Confidence = @Confidence, @Gaze_Point_3d_X = @Gaze_Point_3d_X, @Gaze_Point_3d_Y = @Gaze_Point_3d_Y, @Gaze_Point_3d_Z = @Gaze_Point_3d_Z

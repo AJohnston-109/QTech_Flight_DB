@@ -12,6 +12,7 @@ CREATE PROCEDURE dbo.usp_MergeLandingData
 	, @FlightDataId			INTEGER 
 	, @ScenarioId			INTEGER
 	, @UserIdentifier		UNIQUEIDENTIFIER
+	, @PilotIdentifier		UNIQUEIDENTIFIER
 	, @Start_Timestamp		DECIMAL(8,4)	=	NULL 
 	, @Duration				DECIMAL(5,1)	=	NULL 
 	, @Start_Frame_Index	INTEGER			=	NULL 
@@ -44,7 +45,8 @@ BEGIN TRANSACTION
 		INSERT INTO dbo.LandingData (FlightDataId
 									, ScenarioId
 									, UserIdentifier
-									, Start_timestamp
+									, PilotIdentifier
+									, Start_Timestamp
 									, Duration
 									, Start_Frame_Index
 									, End_Frame_Index
@@ -58,6 +60,7 @@ BEGIN TRANSACTION
 		SELECT						@FlightDataId
 									, @ScenarioId
 									, @UserIdentifier
+									, @PilotIdentifier
 									, @Start_Timestamp
 									, @Duration
 									, @Start_Frame_Index

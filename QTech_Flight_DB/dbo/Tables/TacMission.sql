@@ -2,6 +2,7 @@
 (
 	TacMissionId				INTEGER	 IDENTITY(1,1)	NOT NULL
 	, TacFlightRecordingId		INTEGER					NOT NULL
+	, PilotIdentifier			UNIQUEIDENTIFIER			NULL
 	, Title						NVARCHAR(50)				NULL
 	, Category					NVARCHAR(50)				NULL
 	, MissionTime				NVARCHAR(50)				NULL --TODO, convert to datetime format via datetimeformat function xml giving me wierd format. 

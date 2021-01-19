@@ -14,6 +14,7 @@ CREATE PROCEDURE dbo.usp_MergeTurbulenceData
 	, @FlightDataId			INTEGER 
 	, @ScenarioId			INTEGER
 	, @UserIdentifier		UNIQUEIDENTIFIER
+	, @PilotIdentifier		UNIQUEIDENTIFIER
 	, @Start_Timestamp		DECIMAL(8,4)	=	NULL 
 	, @Duration				DECIMAL(5,1)	=	NULL 
 	, @Start_Frame_Index	INTEGER			=	NULL 
@@ -50,7 +51,7 @@ ELSE SAVE TRANSACTION usp_MergeTurbulenceDataTran
 		INSERT INTO dbo.TurbulenceData (FlightDataId
 									, ScenarioId
 									, UserIdentifier
-									, Start_timestamp
+									, Start_Timestamp
 									, Duration
 									, Start_Frame_Index
 									, End_Frame_Index
@@ -64,7 +65,7 @@ ELSE SAVE TRANSACTION usp_MergeTurbulenceDataTran
 		SELECT						@FlightDataId
 									, @ScenarioId
 									, @UserIdentifier
-									, @Start_timestamp
+									, @Start_Timestamp
 									, @Duration
 									, @Start_Frame_Index
 									, @End_Frame_Index
