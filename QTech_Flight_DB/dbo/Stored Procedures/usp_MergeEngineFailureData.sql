@@ -7,7 +7,7 @@
     *
 	*	[AJ] 16/01/2021 -	Added TRANSACTIONS / TRANSACTION save points, checking for external TRANSACTIONS 
     *********************************************************************************************************/
-CREATE PROCEDURE dbo.usp_MergeEngineFailureData
+CREATE PROCEDURE dbo.usp_MergeEngineFailureData 
 (
 	@EngineFailureDataId	INTEGER = NULL
 	, @FlightDataId			INTEGER 

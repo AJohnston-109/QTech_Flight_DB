@@ -7,7 +7,7 @@
 	*	[AJ] 16/01/2021 -	Added TRANSACTIONS / TRANSACTION save points
     *********************************************************************************************************/
 
-CREATE PROCEDURE dbo.usp_MergeFlightData
+CREATE PROCEDURE dbo.usp_MergeFlightData 
 (
 	@FlightDataId			INTEGER = NULL
 	, @ScenarioId			INTEGER
